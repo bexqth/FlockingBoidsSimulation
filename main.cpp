@@ -2,7 +2,7 @@
 #include "Boid.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "SFML 3 Test");
+    sf::RenderWindow window(sf::VideoMode({800, 600}), "SFML Flocking");
     //Boid boid;
     std::vector<Boid> boids(10);
 

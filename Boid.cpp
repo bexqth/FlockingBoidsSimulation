@@ -25,7 +25,16 @@ Boid::Boid()
     float vectorX = distrRadiusX(gen);
     float vectorY = distrRadiusY(gen);
     cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
-    this->velocity = sf::Vector2f(vectorX, vectorY);
+    float vectorLength = sqrt(pow(vectorX,2) + pow(vectorY,2));
+
+    vectorX = vectorX / vectorLength;
+    vectorY = vectorY / vectorLength;
+    cout << "Normalized vector" << endl;
+    cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
+
+    cout << " " << endl;
+    float speed = 0.04f;
+    this->velocity = sf::Vector2f(vectorX * speed, vectorY * speed);
     //this->acceleration = sf::Vector2f(0.001f, 0.f);
     
     this->shape.setPosition(this->position);
