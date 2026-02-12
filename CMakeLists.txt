@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(libs/sfml)
 
-add_executable(flocking_app main.cpp)
+file(GLOB SOURCE_FILES *.cpp)
+
+add_executable(flocking_app ${SOURCE_FILES})
 
 target_link_libraries(flocking_app sfml-graphics sfml-window sfml-system)
