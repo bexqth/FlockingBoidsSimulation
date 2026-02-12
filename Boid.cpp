@@ -24,6 +24,8 @@ Boid::Boid()
     this->position = sf::Vector2f(randomXPos, randomYPos);
     float vectorX = distrRadiusX(gen);
     float vectorY = distrRadiusY(gen);
+    float rotation = atan2(vectorY, vectorX);
+    this->shape.setRotation(sf::radians(rotation) + sf::radians(1.57079633));
     cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
     float vectorLength = sqrt(pow(vectorX,2) + pow(vectorY,2));
 
