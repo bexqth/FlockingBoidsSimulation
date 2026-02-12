@@ -1,13 +1,24 @@
 #include "Boid.h"
+#include <iostream>
+#include <random>
+
+using namespace std;
 
 Boid::Boid()
 {
-    this->radius = 15.f;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> distrX(100, 700);
+    uniform_int_distribution<> distrY(100, 500);
+
+    float randomXPos = distrX(gen);
+    float randomYPos = distrY(gen);
+    this->radius = 10.f;
     this->shape = sf::CircleShape(this->radius, 3);
     this->shape.setScale({1.0f, 2.0f});
     this->shape.setFillColor(sf::Color(85, 141, 246));
 
-    this->position = sf::Vector2f(300.f, 275.f);
+    this->position = sf::Vector2f(randomXPos, randomYPos);
     this->velocity = sf::Vector2f(0.01f, 0.0f);
     //this->acceleration = sf::Vector2f(0.001f, 0.f);
     
