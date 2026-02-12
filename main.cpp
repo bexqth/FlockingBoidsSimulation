@@ -4,7 +4,7 @@
 int main() {
     sf::RenderWindow window(sf::VideoMode({800, 600}), "SFML 3 Test");
     //Boid boid;
-    std::vector<Boid> boids(30);
+    std::vector<Boid> boids(10);
 
     while (window.isOpen()) {
          while (const std::optional event = window.pollEvent()) {

@@ -11,6 +11,9 @@ Boid::Boid()
     uniform_int_distribution<> distrX(100, 700);
     uniform_int_distribution<> distrY(100, 500);
 
+    std::uniform_real_distribution<> distrRadiusX(0, 0.1);
+    std::uniform_real_distribution<> distrRadiusY(0, 0.1);
+
     float randomXPos = distrX(gen);
     float randomYPos = distrY(gen);
     this->radius = 10.f;
@@ -19,7 +22,10 @@ Boid::Boid()
     this->shape.setFillColor(sf::Color(85, 141, 246));
 
     this->position = sf::Vector2f(randomXPos, randomYPos);
-    this->velocity = sf::Vector2f(0.01f, 0.0f);
+    float vectorX = distrRadiusX(gen);
+    float vectorY = distrRadiusY(gen);
+    cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
+    this->velocity = sf::Vector2f(vectorX, vectorY);
     //this->acceleration = sf::Vector2f(0.001f, 0.f);
     
     this->shape.setPosition(this->position);
