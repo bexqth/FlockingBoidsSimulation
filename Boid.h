@@ -4,6 +4,7 @@
 class Boid
 {
     private:
+        float radius;
         sf::Vector2f position;
         sf::Vector2f velocity;
         sf::Vector2f acceleration;

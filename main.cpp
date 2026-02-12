@@ -11,7 +11,7 @@ int main() {
                 window.close();
             }
         }
-        
+
         boid.move();
         window.clear(sf::Color(40, 44, 52));
         boid.draw(window);
