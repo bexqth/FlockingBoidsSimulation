@@ -16,7 +16,7 @@ class Boid
         ~Boid();
         void update();
         void draw(sf::RenderWindow& window);
-        void move();
+        void move(int maxWidth, int maxHeight);
         void checkForSeparation(std::vector<Boid>& vector);
         void checkForAlignment(std::vector<Boid>& vector);
         void checkForCohesion(std::vector<Boid>& vector);

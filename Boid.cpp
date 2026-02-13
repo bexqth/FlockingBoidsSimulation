@@ -6,10 +6,10 @@ using namespace std;
 
 Boid::Boid()
 {
-    this->speed = 0.05f;
+    this->speed = 0.04f;
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> distrX(100, 700);
+    uniform_int_distribution<> distrX(100, 900);
     uniform_int_distribution<> distrY(100, 500);
 
     std::uniform_real_distribution<> distrRadiusX(0, 0.1);
@@ -17,7 +17,7 @@ Boid::Boid()
 
     float randomXPos = distrX(gen);
     float randomYPos = distrY(gen);
-    this->radius = 7.f;
+    this->radius = 4.f;
     this->shape = sf::CircleShape(this->radius, 3);
     this->shape.setScale({1.0f, 2.0f});
     this->shape.setFillColor(sf::Color(85, 141, 246));
@@ -57,7 +57,7 @@ void Boid::draw(sf::RenderWindow &window)
     window.draw(this->shape);
 }
 
-void Boid::move()
+void Boid::move(int maxWidth, int maxHeight)
 {
     this->position += this->velocity;
     //this->velocity += this->acceleration;
@@ -65,16 +65,16 @@ void Boid::move()
     this->shape.setPosition(this->position);
     //this->acceleration = sf::Vector2f(.0f, .0f);
 
-    if (this->position.x > 800 + this->radius) {
+    if (this->position.x > maxWidth + this->radius) {
         this->position.x = -this->radius;
     } else if (this->position.x < -this->radius) {
-        this->position.x = 800 + this->radius;
+        this->position.x = maxWidth + this->radius;
     }
 
-    if (this->position.y > 600 + this->radius) {
+    if (this->position.y > maxHeight + this->radius) {
         this->position.y = -this->radius;
     } else if (this->position.y < -this->radius) {
-        this->position.y = 600 + this->radius;
+        this->position.y = maxHeight + this->radius;
     }
     
 }
@@ -111,8 +111,6 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
 
         vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
         this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);
-
-        this->rotate(this->velocity.y, this->velocity.x);
     }
 
 }
@@ -141,14 +139,48 @@ void Boid::checkForAlignment(std::vector<Boid> &vector)
         this->velocity = (this->velocity * 0.95f) + (averageVelocity * 0.05f);
         float vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
         this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);
-        this->rotate(this->velocity.y, this->velocity.x);
     }
     
 }
 
 void Boid::checkForCohesion(std::vector<Boid> &vector)
 {
+    float radiusDistance = 60.f;
+    float averageX = 0;
+    float averageY = 0;
+    int count = 0;
 
+    for(auto& boid : vector) {
+        if(&boid != this) {
+            float distanceX = boid.getPosition().x - this->position.x;
+            float distanceY = boid.getPosition().y - this->position.y;
+            float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
+            if (distance <= radiusDistance) {
+                //averageBoidsVector += sf::Vector2f(distanceX, distanceY);
+                averageX += boid.getPosition().x;
+                averageY += boid.getPosition().y;
+                count++;
+            }
+        }
+    }
+
+    if(count > 0) {
+        averageX /= count;
+        averageY /= count;
+
+        sf::Vector2f directionToMiddle = sf::Vector2f(averageX - this->position.x, averageY - this->position.y);
+
+        float vectorLength = sqrt(directionToMiddle.x * directionToMiddle.x + directionToMiddle.y * directionToMiddle.y);
+
+        float vectorX = directionToMiddle.x / vectorLength;
+        float vectorY = directionToMiddle.y / vectorLength;
+
+        directionToMiddle = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
+
+        this->velocity = (this->velocity * 0.998f) + (directionToMiddle * 0.002f);
+        vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
+        this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);     
+    }
 }
 
 sf::Vector2f Boid::getPosition()

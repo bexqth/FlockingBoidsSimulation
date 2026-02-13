@@ -2,9 +2,11 @@
 #include "Boid.h"
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "SFML Flocking");
+    unsigned int winWidth = 1000;
+    unsigned int winHeight = 600;
+    sf::RenderWindow window(sf::VideoMode({winWidth, winHeight}), "SFML Flocking");
     //Boid boid;
-    std::vector<Boid> boids(30);
+    std::vector<Boid> boids(45);
 
     while (window.isOpen()) {
          while (const std::optional event = window.pollEvent()) {
@@ -22,10 +24,15 @@ int main() {
         {
             boid.checkForAlignment(boids);
         }
+
+        for (auto& boid : boids)
+        {
+            boid.checkForCohesion(boids);
+        }
         
         for (auto& boid : boids)
         {
-            boid.move();
+            boid.move(winWidth, winHeight);
         }
         
         //boid.move();
