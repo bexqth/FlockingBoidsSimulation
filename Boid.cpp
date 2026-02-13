@@ -6,6 +6,7 @@ using namespace std;
 
 Boid::Boid()
 {
+    this->speed = 0.04f;
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> distrX(100, 700);
@@ -16,7 +17,7 @@ Boid::Boid()
 
     float randomXPos = distrX(gen);
     float randomYPos = distrY(gen);
-    this->radius = 10.f;
+    this->radius = 7.f;
     this->shape = sf::CircleShape(this->radius, 3);
     this->shape.setScale({1.0f, 2.0f});
     this->shape.setFillColor(sf::Color(85, 141, 246));
@@ -35,8 +36,7 @@ Boid::Boid()
     cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
 
     cout << " " << endl;
-    float speed = 0.04f;
-    this->velocity = sf::Vector2f(vectorX * speed, vectorY * speed);
+    this->velocity = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
     //this->acceleration = sf::Vector2f(0.001f, 0.f);
     
     this->shape.setPosition(this->position);
@@ -76,4 +76,41 @@ void Boid::move()
     } else if (this->position.y < -this->radius) {
         this->position.y = 600 + this->radius;
     }
+    
+}
+
+void Boid::checkForSeparation(vector<Boid>& boidVector) 
+{   
+    sf::Vector2f averageBoidsVector = sf::Vector2f(0,0);
+    float radiusDistance = 30.f;
+    int count = 0;
+
+    for (auto& boid : boidVector)
+    {
+        if(&boid != this) {
+            float distanceX = boid.getPosition().x - this->position.x;
+            float distanceY = boid.getPosition().y - this->position.y;
+            float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
+            if (distance <= radiusDistance) {
+                averageBoidsVector += sf::Vector2f(distanceX, distanceY);
+                count++;
+            }
+        }
+    }
+
+    if(count > 0) {
+        sf::Vector2f oppositeVector = -averageBoidsVector;
+        float vectorLength = sqrt(oppositeVector.x * oppositeVector.x + oppositeVector.y * oppositeVector.y);
+
+        float vectorX = oppositeVector.x / vectorLength;
+        float vectorY = oppositeVector.y / vectorLength;
+
+        this->velocity = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
+    }
+
+}
+
+sf::Vector2f Boid::getPosition()
+{
+    return this->position;
 }

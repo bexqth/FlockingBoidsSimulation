@@ -4,7 +4,7 @@
 int main() {
     sf::RenderWindow window(sf::VideoMode({800, 600}), "SFML Flocking");
     //Boid boid;
-    std::vector<Boid> boids(10);
+    std::vector<Boid> boids(30);
 
     while (window.isOpen()) {
          while (const std::optional event = window.pollEvent()) {
@@ -16,6 +16,7 @@ int main() {
         for (auto& boid : boids)
         {
             boid.move();
+            boid.checkForSeparation(boids);
         }
         
         //boid.move();
