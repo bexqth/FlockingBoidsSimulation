@@ -119,7 +119,7 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
 
 void Boid::checkForAlignment(std::vector<Boid> &vector)
 {
-    float radiusDistance = 40.f;
+    float radiusDistance = 60.f;
     sf::Vector2f averageVelocity = sf::Vector2f(0,0);
     int count = 0;
 
@@ -144,6 +144,11 @@ void Boid::checkForAlignment(std::vector<Boid> &vector)
         this->rotate(this->velocity.y, this->velocity.x);
     }
     
+}
+
+void Boid::checkForCohesion(std::vector<Boid> &vector)
+{
+
 }
 
 sf::Vector2f Boid::getPosition()

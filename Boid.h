@@ -19,6 +19,7 @@ class Boid
         void move();
         void checkForSeparation(std::vector<Boid>& vector);
         void checkForAlignment(std::vector<Boid>& vector);
+        void checkForCohesion(std::vector<Boid>& vector);
         sf::Vector2f getPosition();
         sf::Vector2f getVelocity();
         void rotate(float vectorY, float vectorX);
