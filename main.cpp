@@ -15,8 +15,12 @@ int main() {
 
         for (auto& boid : boids)
         {
-            boid.move();
             boid.checkForSeparation(boids);
+        }
+
+        for (auto& boid : boids)
+        {
+            boid.move();
         }
         
         //boid.move();

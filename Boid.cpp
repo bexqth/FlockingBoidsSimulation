@@ -82,7 +82,7 @@ void Boid::move()
 void Boid::checkForSeparation(vector<Boid>& boidVector) 
 {   
     sf::Vector2f averageBoidsVector = sf::Vector2f(0,0);
-    float radiusDistance = 30.f;
+    float radiusDistance = 40.f;
     int count = 0;
 
     for (auto& boid : boidVector)
@@ -105,7 +105,12 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
         float vectorX = oppositeVector.x / vectorLength;
         float vectorY = oppositeVector.y / vectorLength;
 
-        this->velocity = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
+        oppositeVector = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
+        this->velocity = (this->velocity * 0.95f) + (oppositeVector * 0.05f);
+
+        vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
+        this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);
+
     }
 
 }
