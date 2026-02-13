@@ -6,7 +6,7 @@ using namespace std;
 
 Boid::Boid()
 {
-    this->speed = 0.04f;
+    this->speed = 0.05f;
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> distrX(100, 700);
@@ -25,8 +25,7 @@ Boid::Boid()
     this->position = sf::Vector2f(randomXPos, randomYPos);
     float vectorX = distrRadiusX(gen);
     float vectorY = distrRadiusY(gen);
-    float rotation = atan2(vectorY, vectorX);
-    this->shape.setRotation(sf::radians(rotation) + sf::radians(1.57079633));
+    this->rotate(vectorY, vectorX);
     cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
     float vectorLength = sqrt(pow(vectorX,2) + pow(vectorY,2));
 
@@ -62,6 +61,7 @@ void Boid::move()
 {
     this->position += this->velocity;
     //this->velocity += this->acceleration;
+    this->rotate(this->velocity.y, this->velocity.x);
     this->shape.setPosition(this->position);
     //this->acceleration = sf::Vector2f(.0f, .0f);
 
@@ -92,7 +92,8 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
             float distanceY = boid.getPosition().y - this->position.y;
             float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
             if (distance <= radiusDistance) {
-                averageBoidsVector += sf::Vector2f(distanceX, distanceY);
+                //averageBoidsVector += sf::Vector2f(distanceX, distanceY);
+                averageBoidsVector += sf::Vector2f(distanceX / distance, distanceY / distance);
                 count++;
             }
         }
@@ -111,11 +112,20 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
         vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
         this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);
 
+        this->rotate(this->velocity.y, this->velocity.x);
     }
 
 }
 
+
+
 sf::Vector2f Boid::getPosition()
 {
     return this->position;
+}
+
+void Boid::rotate(float vectorY, float vectorX)
+{
+    float rotation = atan2(vectorY, vectorX);
+    this->shape.setRotation(sf::radians(rotation) + sf::radians(1.57079633));
 }

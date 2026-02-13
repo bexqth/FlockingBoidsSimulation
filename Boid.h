@@ -19,5 +19,6 @@ class Boid
         void move();
         void checkForSeparation(std::vector<Boid>& vector);
         sf::Vector2f getPosition();
+        void rotate(float vectorY, float vectorX);
 };
 
