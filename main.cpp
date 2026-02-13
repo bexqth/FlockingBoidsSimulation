@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Boid.h"
+#include "Simulation.h"
 
 int main() {
     unsigned int winWidth = 1000;
@@ -7,6 +8,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode({winWidth, winHeight}), "SFML Flocking");
     //Boid boid;
     std::vector<Boid> boids(45);
+    Simulation simulation;
 
     while (window.isOpen()) {
          while (const std::optional event = window.pollEvent()) {
@@ -15,33 +17,10 @@ int main() {
             }
         }
 
-        for (auto& boid : boids)
-        {
-            boid.checkForSeparation(boids);
-        }
-
-        for (auto& boid : boids)
-        {
-            boid.checkForAlignment(boids);
-        }
-
-        for (auto& boid : boids)
-        {
-            boid.checkForCohesion(boids);
-        }
+        simulation.update(winWidth, winHeight);
         
-        for (auto& boid : boids)
-        {
-            boid.move(winWidth, winHeight);
-        }
-        
-        //boid.move();
         window.clear(sf::Color(40, 44, 52));
-        //boid.draw(window);
-        for (auto& boid : boids)
-        {
-            boid.draw(window);
-        }
+        simulation.draw(window);
         window.display();
     }
     return 0;
