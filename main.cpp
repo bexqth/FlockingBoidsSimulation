@@ -20,6 +20,11 @@ int main() {
 
         for (auto& boid : boids)
         {
+            boid.checkForAlignment(boids);
+        }
+        
+        for (auto& boid : boids)
+        {
             boid.move();
         }
         

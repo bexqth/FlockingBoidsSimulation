@@ -117,11 +117,43 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
 
 }
 
+void Boid::checkForAlignment(std::vector<Boid> &vector)
+{
+    float radiusDistance = 40.f;
+    sf::Vector2f averageVelocity = sf::Vector2f(0,0);
+    int count = 0;
 
+    for(auto& boid: vector) {
+        if(&boid != this) {
+            float distanceX = boid.getPosition().x - this->position.x;
+            float distanceY = boid.getPosition().y - this->position.y;
+            float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
+            if (distance <= radiusDistance) {
+                //averageBoidsVector += sf::Vector2f(distanceX, distanceY);
+                averageVelocity += sf::Vector2f(boid.getVelocity().x, boid.getVelocity().y);
+                count++;
+            }
+        }       
+    }
+
+    if (count > 0) {
+        averageVelocity = sf::Vector2f(averageVelocity.x / count, averageVelocity.y / count);
+        this->velocity = (this->velocity * 0.95f) + (averageVelocity * 0.05f);
+        float vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
+        this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);
+        this->rotate(this->velocity.y, this->velocity.x);
+    }
+    
+}
 
 sf::Vector2f Boid::getPosition()
 {
     return this->position;
+}
+
+sf::Vector2f Boid::getVelocity()
+{
+    return this->velocity;
 }
 
 void Boid::rotate(float vectorY, float vectorX)
