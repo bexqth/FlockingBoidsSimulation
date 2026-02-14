@@ -8,7 +8,6 @@ class Boid
         float radius;
         sf::Vector2f position;
         sf::Vector2f velocity;
-        sf::Vector2f acceleration;
         sf::CircleShape shape;
         float speed;
     public:
@@ -17,6 +16,7 @@ class Boid
         void update();
         void draw(sf::RenderWindow& window);
         void move(int maxWidth, int maxHeight);
+        void checkWindowBorders(int maxWidth, int maxHeight);
         void checkForSeparation(std::vector<Boid>& vector);
         void checkForAlignment(std::vector<Boid>& vector);
         void checkForCohesion(std::vector<Boid>& vector);

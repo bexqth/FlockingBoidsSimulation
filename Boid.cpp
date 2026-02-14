@@ -6,6 +6,7 @@ using namespace std;
 
 Boid::Boid()
 {
+    //this->speed = 2.0f;
     this->speed = 0.04f;
     random_device rd;
     mt19937 gen(rd());
@@ -17,10 +18,11 @@ Boid::Boid()
 
     float randomXPos = distrX(gen);
     float randomYPos = distrY(gen);
-    this->radius = 4.f;
+    this->radius = 5.f;
     this->shape = sf::CircleShape(this->radius, 3);
-    this->shape.setScale({1.0f, 2.0f});
+    this->shape.setScale({1.0f, 1.0f});
     this->shape.setFillColor(sf::Color(85, 141, 246));
+    this->shape.setOrigin(sf::Vector2f(this->radius, this->radius));
 
     this->position = sf::Vector2f(randomXPos, randomYPos);
     float vectorX = distrRadiusX(gen);
@@ -60,23 +62,31 @@ void Boid::draw(sf::RenderWindow &window)
 void Boid::move(int maxWidth, int maxHeight)
 {
     this->position += this->velocity;
-    //this->velocity += this->acceleration;
+    this->checkWindowBorders(maxWidth, maxHeight);
     this->rotate(this->velocity.y, this->velocity.x);
     this->shape.setPosition(this->position);
-    //this->acceleration = sf::Vector2f(.0f, .0f);
+}
 
-    if (this->position.x > maxWidth + this->radius) {
-        this->position.x = -this->radius;
-    } else if (this->position.x < -this->radius) {
-        this->position.x = maxWidth + this->radius;
+void Boid::checkWindowBorders(int maxWidth, int maxHeight)
+{
+    float step = 2.0f;
+    if (this->position.x + this->radius + step > maxWidth) {
+        this->velocity.x = -abs(this->velocity.x);
+        this->position.x = maxWidth - this->radius - step;
+
+    } else if (this->position.x - this->radius - step < 0) {
+        this->velocity.x = abs(this->velocity.x);
+        this->position.x = this->radius + step;
     }
 
-    if (this->position.y > maxHeight + this->radius) {
-        this->position.y = -this->radius;
-    } else if (this->position.y < -this->radius) {
-        this->position.y = maxHeight + this->radius;
+    if (this->position.y + this->radius + step > maxHeight) {
+       this->velocity.y  = -abs(this->velocity.y);
+       this->position.y = maxHeight - this->radius - step;
+
+    } else if (this->position.y - this->radius - step < 0) {
+        this->velocity.y = abs(this->velocity.y);
+        this->position.y = this->radius + step;
     }
-    
 }
 
 void Boid::checkForSeparation(vector<Boid>& boidVector) 
@@ -198,3 +208,4 @@ void Boid::rotate(float vectorY, float vectorX)
     float rotation = atan2(vectorY, vectorX);
     this->shape.setRotation(sf::radians(rotation) + sf::radians(1.57079633));
 }
+
