@@ -71,20 +71,20 @@ void Boid::checkWindowBorders(int maxWidth, int maxHeight)
 {
     float step = 2.0f;
     if (this->position.x + this->radius + step > maxWidth) {
-        this->velocity.x = -abs(this->velocity.x);
+        this->velocity.x *= -1;
         this->position.x = maxWidth - this->radius - step;
 
     } else if (this->position.x - this->radius - step < 0) {
-        this->velocity.x = abs(this->velocity.x);
+        this->velocity.x *= -1;
         this->position.x = this->radius + step;
     }
 
     if (this->position.y + this->radius + step > maxHeight) {
-       this->velocity.y  = -abs(this->velocity.y);
+        this->velocity.y *= -1;
        this->position.y = maxHeight - this->radius - step;
 
     } else if (this->position.y - this->radius - step < 0) {
-        this->velocity.y = abs(this->velocity.y);
+         this->velocity.y *= -1;
         this->position.y = this->radius + step;
     }
 }
