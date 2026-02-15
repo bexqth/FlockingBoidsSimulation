@@ -1,4 +1,7 @@
 #include "Obstacle.h"
+#include <iostream>
+
+using namespace std;
 
 Obstacle::Obstacle(sf::Vector2f position) : position(position)
 {
@@ -21,6 +24,13 @@ void Obstacle::draw(sf::RenderWindow& window)
 
 bool Obstacle::isMouseClicked(sf::Vector2i mousePosition)
 {
+    float xDiff = mousePosition.x - this->position.x;
+    float yDiff = mousePosition.y - this->position.y;
+    float distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
+    if(distance <= this->conflicArea) {
+        //cout << "in the conflict area" << endl;
+        return true;
+    }
     return false;
 }
 

@@ -54,10 +54,13 @@ void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button bu
     {
         case sf::Mouse::Button::Right:
             auto obs = this->checkIfClickedObstacle(mousePos);
+            //cout << obs << endl;
             if (obs == nullptr) {
                 this->attractionObstacles.push_back(new AttractionObstacle(sf::Vector2f(mousePos)));
+                cout << "obs created" << endl;
                 //this->attractionObstacles[this->attractionObstacles.size() - 1]->draw(window);
             } else {
+                cout << "obs deleted" << endl;
                 eraseObstacle(obs);
             }
             break;
