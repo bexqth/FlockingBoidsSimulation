@@ -41,6 +41,11 @@ void Simulation::update(int winWidth, int winHeight)
         boid.checkForAttractionObstacle(this->attractionObstacles);
     }
 
+    for (auto& boid : boids)
+    {
+        boid.checkForAvoidanceObstacle(this->avoidanceObstacles);
+    }    
+
     
 }
 
@@ -66,6 +71,7 @@ void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button bu
     switch (button)
     {
         case sf::Mouse::Button::Right:
+            cout << "RIGHT. " << endl;
             if (obs == nullptr) {
                 this->attractionObstacles.push_back(new AttractionObstacle(sf::Vector2f(mousePos)));
             } else {
@@ -73,13 +79,15 @@ void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button bu
             }
             break;
         case sf::Mouse::Button::Left:
+            cout << "LEFT. " << endl;
             if (obs == nullptr) {
                 this->avoidanceObstacles.push_back(new AvoidanceObstacle(sf::Vector2f(mousePos)));
             } else {
                 eraseObstacle(obs);
             }
             break;    
-
+        default:
+            break;
     }
 }
 

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <random>
 #include "AttractionObstacle.h"
+#include "AvoidanceObstacle.h"
 
 using namespace std;
 
@@ -198,6 +199,29 @@ void Boid::checkForAttractionObstacle(std::vector<AttractionObstacle*> &attObsta
             std::pair<sf::Vector2f, bool> normalizedVelocity =  this->normalizeVector(this->velocity);
             if (normalizedVelocity.second) {
                 this->velocity = normalizedVelocity.first * this->speed;
+            }
+        }
+    }
+}
+
+void Boid::checkForAvoidanceObstacle(std::vector<AvoidanceObstacle*> &avObstacles)
+{
+    for(auto& avObstacle : avObstacles) {
+        float xDiff = this->position.x - avObstacle->getPosition().x;
+        float yDiff = this->position.y - avObstacle->getPosition().y;
+        auto distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
+        if(distance <= 80.0f) {
+            float weight = 5.0f / (distance + 50.f);
+            //cout << weight << endl;
+            auto directionVector = sf::Vector2f(xDiff, yDiff);
+            auto normalizedDirectionVector = this->normalizeVector(directionVector);
+            if (normalizedDirectionVector.second) {
+                auto directionFromObstacle = normalizedDirectionVector.first * this->speed;
+                this->velocity = (this->velocity * (1.0f - weight)) + (directionFromObstacle * weight);
+                std::pair<sf::Vector2f, bool> normalizedVelocity =  this->normalizeVector(this->velocity);
+                if (normalizedVelocity.second) {
+                    this->velocity = normalizedVelocity.first * this->speed;
+                }
             }
         }
     }

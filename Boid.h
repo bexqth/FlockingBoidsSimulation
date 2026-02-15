@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "AttractionObstacle.h"
+#include "AvoidanceObstacle.h"
 
 class Boid
 {
@@ -22,6 +23,7 @@ class Boid
         void checkForAlignment(std::vector<Boid>& vector);
         void checkForCohesion(std::vector<Boid>& vector);
         void checkForAttractionObstacle(std::vector<AttractionObstacle*>& attObstacles);
+        void checkForAvoidanceObstacle(std::vector<AvoidanceObstacle*>& avObstacles);
         std::pair<sf::Vector2f, bool> normalizeVector(sf::Vector2f vector);
         sf::Vector2f getPosition();
         sf::Vector2f getVelocity();
