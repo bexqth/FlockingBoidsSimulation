@@ -6,7 +6,7 @@ using namespace std;
 AttractionObstacle::AttractionObstacle(sf::Vector2f position) : Obstacle(position)
 {
     this->shape.setFillColor(sf::Color(196, 180, 255));
-    cout << position.x << " " << position.y << endl;
+    //cout << position.x << " " << position.y << endl;
 }
 
 AttractionObstacle::~AttractionObstacle()
@@ -14,7 +14,3 @@ AttractionObstacle::~AttractionObstacle()
 
 }
 
-void AttractionObstacle::update()
-{
-
-}

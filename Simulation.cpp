@@ -7,6 +7,7 @@ Simulation::Simulation()
 {
     this->boids.resize(40);
     this->attractionObstacles = {};
+    this->avoidanceObstacles = {};
 }
 
 Simulation::~Simulation()
@@ -39,6 +40,7 @@ void Simulation::update(int winWidth, int winHeight)
     {
         boid.checkForAttractionObstacle(this->attractionObstacles);
     }
+
     
 }
 
@@ -52,33 +54,56 @@ void Simulation::draw(sf::RenderWindow &window)
     for (auto* obs : attractionObstacles) {
         obs->draw(window);
     }
+
+    for (auto* obs : avoidanceObstacles) {
+        obs->draw(window);
+    }
 }
 
 void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button button, sf::Vector2i mousePos)
 {
+    auto obs = this->checkIfClickedObstacle(mousePos);
     switch (button)
     {
         case sf::Mouse::Button::Right:
-            auto obs = this->checkIfClickedObstacle(mousePos);
-            //cout << obs << endl;
             if (obs == nullptr) {
                 this->attractionObstacles.push_back(new AttractionObstacle(sf::Vector2f(mousePos)));
             } else {
                 eraseObstacle(obs);
             }
             break;
+        case sf::Mouse::Button::Left:
+            if (obs == nullptr) {
+                this->avoidanceObstacles.push_back(new AvoidanceObstacle(sf::Vector2f(mousePos)));
+            } else {
+                eraseObstacle(obs);
+            }
+            break;    
+
     }
 }
 
 
 void Simulation::eraseObstacle(Obstacle* foundObstacle)
 {
-    for(int i = 0; i < this->attractionObstacles.size(); i++) {
-        if (this->attractionObstacles[i] == foundObstacle) {
-            this->attractionObstacles.erase(this->attractionObstacles.begin() + i);
-            break;
+    if(dynamic_cast<AttractionObstacle*>(foundObstacle)) {
+        for(int i = 0; i < this->attractionObstacles.size(); i++) {
+            if (this->attractionObstacles[i] == foundObstacle) {
+                this->attractionObstacles.erase(this->attractionObstacles.begin() + i);
+                break;
+            }
         }
+    } else if (dynamic_cast<AvoidanceObstacle*>(foundObstacle)) {
+        for (int i = 0; i < this->avoidanceObstacles.size(); i++)
+        {
+            if(this->avoidanceObstacles[i] == foundObstacle) {
+                this->avoidanceObstacles.erase(this->avoidanceObstacles.begin() + i);
+                break;
+            }
+        }
+        
     }
+    
 }
 
 Obstacle* Simulation::checkIfClickedObstacle(sf::Vector2i mousePos)
@@ -88,6 +113,15 @@ Obstacle* Simulation::checkIfClickedObstacle(sf::Vector2i mousePos)
         if (atObs->isMouseClicked(mousePos))
         {
             return atObs;
+        }
+        
+    }
+    
+    for (auto& avObs : this->avoidanceObstacles)
+    {
+        if (avObs->isMouseClicked(mousePos))
+        {
+            return avObs;
         }
         
     }

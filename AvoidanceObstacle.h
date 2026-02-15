@@ -1,10 +1,11 @@
 #pragma once
+#include "Obstacle.h"
 
-class AvoidanceObstacle
+class AvoidanceObstacle : public Obstacle
 {
 private:
 
 public:
-    AvoidanceObstacle();
+    AvoidanceObstacle(sf::Vector2f position);
     ~AvoidanceObstacle();
 };

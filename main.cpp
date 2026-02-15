@@ -22,12 +22,7 @@ int main() {
             if (const auto* mouseButtonPressed = event->getIf<sf::Event::MouseButtonPressed>())
             {
                 auto mousePosVector = sf::Vector2i(mouseButtonPressed->position.x, mouseButtonPressed->position.y);
-                if (mouseButtonPressed->button == sf::Mouse::Button::Right)
-                {
-                    simulation.handleMouseClick(window, mouseButtonPressed->button, mousePosVector);
-                } else if (mouseButtonPressed->button == sf::Mouse::Button::Left) {
-                    std::cout << "the left button was pressed" << std::endl;
-                }
+                simulation.handleMouseClick(window, mouseButtonPressed->button, mousePosVector);
             }
         }
 

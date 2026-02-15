@@ -2,12 +2,14 @@
 #include <vector>
 #include "Boid.h"
 #include "AttractionObstacle.h"
+#include "AvoidanceObstacle.h"
 
 class Simulation
 {
 private:
     std::vector<Boid> boids;
     std::vector<AttractionObstacle*> attractionObstacles;
+    std::vector<AvoidanceObstacle*> avoidanceObstacles;
     
 public:
     Simulation();

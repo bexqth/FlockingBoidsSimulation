@@ -8,6 +8,5 @@ private:
 public:
     AttractionObstacle(sf::Vector2f position);
     ~AttractionObstacle();
-    void update() override;
 };
 
