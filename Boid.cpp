@@ -7,7 +7,7 @@ using namespace std;
 Boid::Boid()
 {
     //this->speed = 2.0f;
-    this->speed = 0.04f;
+    this->speed = 0.05f;
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> distrX(100, 900);
@@ -28,18 +28,11 @@ Boid::Boid()
     float vectorX = distrRadiusX(gen);
     float vectorY = distrRadiusY(gen);
     this->rotate(vectorY, vectorX);
-    cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
-    float vectorLength = sqrt(pow(vectorX,2) + pow(vectorY,2));
+    std::pair<sf::Vector2f, bool> normalizedVec = this->normalizeVector(sf::Vector2f(vectorX, vectorY));
+    if (normalizedVec.second) {
+        this->velocity = normalizedVec.first * this->speed;
+    }
 
-    vectorX = vectorX / vectorLength;
-    vectorY = vectorY / vectorLength;
-    cout << "Normalized vector" << endl;
-    cout << "vectorX: " << vectorX << " vectorY: " << vectorY << endl;
-
-    cout << " " << endl;
-    this->velocity = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
-    //this->acceleration = sf::Vector2f(0.001f, 0.f);
-    
     this->shape.setPosition(this->position);
 
 }
@@ -69,7 +62,7 @@ void Boid::move(int maxWidth, int maxHeight)
 
 void Boid::checkWindowBorders(int maxWidth, int maxHeight)
 {
-    float step = 2.0f;
+    float step = 10.0f;
     if (this->position.x + this->radius + step > maxWidth) {
         this->velocity.x *= -1;
         this->position.x = maxWidth - this->radius - step;
@@ -102,7 +95,6 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
             float distanceY = boid.getPosition().y - this->position.y;
             float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
             if (distance <= radiusDistance) {
-                //averageBoidsVector += sf::Vector2f(distanceX, distanceY);
                 averageBoidsVector += sf::Vector2f(distanceX / distance, distanceY / distance);
                 count++;
             }
@@ -111,16 +103,14 @@ void Boid::checkForSeparation(vector<Boid>& boidVector)
 
     if(count > 0) {
         sf::Vector2f oppositeVector = -averageBoidsVector;
-        float vectorLength = sqrt(oppositeVector.x * oppositeVector.x + oppositeVector.y * oppositeVector.y);
-
-        float vectorX = oppositeVector.x / vectorLength;
-        float vectorY = oppositeVector.y / vectorLength;
-
-        oppositeVector = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
-        this->velocity = (this->velocity * 0.95f) + (oppositeVector * 0.05f);
-
-        vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
-        this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);
+        std::pair<sf::Vector2f, bool> normalizedOpposite = this->normalizeVector(oppositeVector);
+        if (normalizedOpposite.second) {
+            this->velocity = (this->velocity * 0.95f) + ((normalizedOpposite.first * this->speed) * 0.05f);
+            std::pair<sf::Vector2f, bool> normalizedVelocity = this->normalizeVector(this->velocity);
+            if (normalizedVelocity.second) {
+                this->velocity = normalizedVelocity.first * this->speed;
+            }
+        }
     }
 
 }
@@ -137,7 +127,6 @@ void Boid::checkForAlignment(std::vector<Boid> &vector)
             float distanceY = boid.getPosition().y - this->position.y;
             float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
             if (distance <= radiusDistance) {
-                //averageBoidsVector += sf::Vector2f(distanceX, distanceY);
                 averageVelocity += sf::Vector2f(boid.getVelocity().x, boid.getVelocity().y);
                 count++;
             }
@@ -147,8 +136,10 @@ void Boid::checkForAlignment(std::vector<Boid> &vector)
     if (count > 0) {
         averageVelocity = sf::Vector2f(averageVelocity.x / count, averageVelocity.y / count);
         this->velocity = (this->velocity * 0.95f) + (averageVelocity * 0.05f);
-        float vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
-        this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);
+        std::pair<sf::Vector2f, bool> normalizedVelocity = this->normalizeVector(this->velocity);
+        if (normalizedVelocity.second) {
+            this->velocity = normalizedVelocity.first * this->speed;
+        }
     }
     
 }
@@ -166,7 +157,6 @@ void Boid::checkForCohesion(std::vector<Boid> &vector)
             float distanceY = boid.getPosition().y - this->position.y;
             float distance = sqrt((distanceX * distanceX) + (distanceY * distanceY));
             if (distance <= radiusDistance) {
-                //averageBoidsVector += sf::Vector2f(distanceX, distanceY);
                 averageX += boid.getPosition().x;
                 averageY += boid.getPosition().y;
                 count++;
@@ -179,18 +169,31 @@ void Boid::checkForCohesion(std::vector<Boid> &vector)
         averageY /= count;
 
         sf::Vector2f directionToMiddle = sf::Vector2f(averageX - this->position.x, averageY - this->position.y);
-
-        float vectorLength = sqrt(directionToMiddle.x * directionToMiddle.x + directionToMiddle.y * directionToMiddle.y);
-
-        float vectorX = directionToMiddle.x / vectorLength;
-        float vectorY = directionToMiddle.y / vectorLength;
-
-        directionToMiddle = sf::Vector2f(vectorX * this->speed, vectorY * this->speed);
-
-        this->velocity = (this->velocity * 0.998f) + (directionToMiddle * 0.002f);
-        vectorLength = sqrt(this->velocity.x * this->velocity.x + this->velocity.y * this->velocity.y);
-        this->velocity = sf::Vector2f((this->velocity.x / vectorLength) * this->speed, (this->velocity.y / vectorLength) * this->speed);     
+        std::pair<sf::Vector2f, bool> normalizedDirectinMiddle = this->normalizeVector(directionToMiddle);
+        if (normalizedDirectinMiddle.second) {
+            directionToMiddle = normalizedDirectinMiddle.first * this->speed;
+            this->velocity = (this->velocity * 0.998f) + (directionToMiddle * 0.002f);
+            std::pair<sf::Vector2f, bool> normalizedVelocity =  this->normalizeVector(this->velocity);
+            if (normalizedVelocity.second) {
+                this->velocity = normalizedVelocity.first * this->speed;
+            }
+        }
     }
+}
+
+std::pair<sf::Vector2f, bool> Boid::normalizeVector(sf::Vector2f vector)
+{
+    float vectorLength = sqrt((vector.x * vector.x) + (vector.y * vector.y));
+    if (vectorLength != 0.f) {
+        
+        vector.x = vector.x / vectorLength;
+        vector.y = vector.y / vectorLength;
+        float vectorLength = sqrt((vector.x * vector.x) + (vector.y * vector.y));
+        cout << vectorLength << endl;
+        return {vector, true};
+    }
+    cout << vectorLength << endl;
+    return {vector, false};
 }
 
 sf::Vector2f Boid::getPosition()

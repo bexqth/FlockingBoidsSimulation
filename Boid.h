@@ -20,6 +20,7 @@ class Boid
         void checkForSeparation(std::vector<Boid>& vector);
         void checkForAlignment(std::vector<Boid>& vector);
         void checkForCohesion(std::vector<Boid>& vector);
+        std::pair<sf::Vector2f, bool> normalizeVector(sf::Vector2f vector);
         sf::Vector2f getPosition();
         sf::Vector2f getVelocity();
         void rotate(float vectorY, float vectorX);
