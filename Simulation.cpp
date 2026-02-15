@@ -6,8 +6,7 @@ using namespace std;
 Simulation::Simulation()
 {
     this->boids.resize(40);
-    this->attractionObstacles = {};
-    this->avoidanceObstacles = {};
+    this->allObstacles = {};
 }
 
 Simulation::~Simulation()
@@ -38,14 +37,8 @@ void Simulation::update(int winWidth, int winHeight)
 
     for (auto& boid : boids)
     {
-        boid.checkForAttractionObstacle(this->attractionObstacles);
+        boid.checkForObstacle(this->allObstacles);
     }
-
-    for (auto& boid : boids)
-    {
-        boid.checkForAvoidanceObstacle(this->avoidanceObstacles);
-    }    
-
     
 }
 
@@ -56,11 +49,7 @@ void Simulation::draw(sf::RenderWindow &window)
         boid.draw(window);
     }
 
-    for (auto* obs : attractionObstacles) {
-        obs->draw(window);
-    }
-
-    for (auto* obs : avoidanceObstacles) {
+    for (auto* obs : allObstacles) {
         obs->draw(window);
     }
 }
@@ -73,7 +62,7 @@ void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button bu
         case sf::Mouse::Button::Right:
             cout << "RIGHT. " << endl;
             if (obs == nullptr) {
-                this->attractionObstacles.push_back(new AttractionObstacle(sf::Vector2f(mousePos)));
+                this->allObstacles.push_back(new AttractionObstacle(sf::Vector2f(mousePos)));
             } else {
                 eraseObstacle(obs);
             }
@@ -81,7 +70,7 @@ void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button bu
         case sf::Mouse::Button::Left:
             cout << "LEFT. " << endl;
             if (obs == nullptr) {
-                this->avoidanceObstacles.push_back(new AvoidanceObstacle(sf::Vector2f(mousePos)));
+                this->allObstacles.push_back(new AvoidanceObstacle(sf::Vector2f(mousePos)));
             } else {
                 eraseObstacle(obs);
             }
@@ -94,44 +83,26 @@ void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button bu
 
 void Simulation::eraseObstacle(Obstacle* foundObstacle)
 {
-    if(dynamic_cast<AttractionObstacle*>(foundObstacle)) {
-        for(int i = 0; i < this->attractionObstacles.size(); i++) {
-            if (this->attractionObstacles[i] == foundObstacle) {
-                this->attractionObstacles.erase(this->attractionObstacles.begin() + i);
-                break;
-            }
+    for(int i = 0; i < this->allObstacles.size(); i++) {
+        if (this->allObstacles[i] == foundObstacle) {
+            this->allObstacles.erase(this->allObstacles.begin() + i);
+            break;
         }
-    } else if (dynamic_cast<AvoidanceObstacle*>(foundObstacle)) {
-        for (int i = 0; i < this->avoidanceObstacles.size(); i++)
-        {
-            if(this->avoidanceObstacles[i] == foundObstacle) {
-                this->avoidanceObstacles.erase(this->avoidanceObstacles.begin() + i);
-                break;
-            }
-        }
-        
     }
+    
     
 }
 
 Obstacle* Simulation::checkIfClickedObstacle(sf::Vector2i mousePos)
 {
-    for (auto& atObs : this->attractionObstacles)
+    for (auto& obs : this->allObstacles)
     {
-        if (atObs->isMouseClicked(mousePos))
+        if (obs->isMouseClicked(mousePos))
         {
-            return atObs;
+            return obs;
         }
         
     }
     
-    for (auto& avObs : this->avoidanceObstacles)
-    {
-        if (avObs->isMouseClicked(mousePos))
-        {
-            return avObs;
-        }
-        
-    }
     return nullptr;
 }

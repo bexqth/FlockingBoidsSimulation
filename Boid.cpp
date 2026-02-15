@@ -183,45 +183,38 @@ void Boid::checkForCohesion(std::vector<Boid> &vector)
     }
 }
 
-void Boid::checkForAttractionObstacle(std::vector<AttractionObstacle*> &attObstacles)
+void Boid::checkForObstacle(std::vector<Obstacle *> &obstacles)
 {
-    for(auto& attObstacle : attObstacles) {
-        float xDiff = attObstacle->getPosition().x - this->position.x;
-        float yDiff = attObstacle->getPosition().y - this->position.y;
-        auto distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
-        float weight = (1.f / (distance + 30.f));
+    float direction;
+    float xDiff;
+    float yDiff;
+    float distance;
+    float weight;
+
+    for(auto& obstacle : obstacles) {
+        if(dynamic_cast<AttractionObstacle*>(obstacle)) {
+            xDiff = obstacle->getPosition().x - this->position.x;
+            yDiff = obstacle->getPosition().y - this->position.y;
+            distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
+            weight = (1.f / (distance + 30.f));
+        } else if (dynamic_cast<AvoidanceObstacle*>(obstacle)) {
+            xDiff = this->position.x - obstacle->getPosition().x;
+            yDiff = this->position.y - obstacle->getPosition().y;
+            distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
+            weight = 5.0f / (distance + 50.f);
+            if(distance > 80.0f) {
+                continue;
+            }
+        }
 
         auto directionVector = sf::Vector2f(xDiff, yDiff);
         auto normalizedDirectionVector = this->normalizeVector(directionVector);
         if (normalizedDirectionVector.second) {
-            auto directionToObstacle = normalizedDirectionVector.first * this->speed;
-            this->velocity = (this->velocity * (1.0f - weight)) + (directionToObstacle * weight);
+            auto directionFromObstacle = normalizedDirectionVector.first * this->speed;
+            this->velocity = (this->velocity * (1.0f - weight)) + (directionFromObstacle * weight);
             std::pair<sf::Vector2f, bool> normalizedVelocity =  this->normalizeVector(this->velocity);
             if (normalizedVelocity.second) {
                 this->velocity = normalizedVelocity.first * this->speed;
-            }
-        }
-    }
-}
-
-void Boid::checkForAvoidanceObstacle(std::vector<AvoidanceObstacle*> &avObstacles)
-{
-    for(auto& avObstacle : avObstacles) {
-        float xDiff = this->position.x - avObstacle->getPosition().x;
-        float yDiff = this->position.y - avObstacle->getPosition().y;
-        auto distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
-        if(distance <= 80.0f) {
-            float weight = 5.0f / (distance + 50.f);
-            //cout << weight << endl;
-            auto directionVector = sf::Vector2f(xDiff, yDiff);
-            auto normalizedDirectionVector = this->normalizeVector(directionVector);
-            if (normalizedDirectionVector.second) {
-                auto directionFromObstacle = normalizedDirectionVector.first * this->speed;
-                this->velocity = (this->velocity * (1.0f - weight)) + (directionFromObstacle * weight);
-                std::pair<sf::Vector2f, bool> normalizedVelocity =  this->normalizeVector(this->velocity);
-                if (normalizedVelocity.second) {
-                    this->velocity = normalizedVelocity.first * this->speed;
-                }
             }
         }
     }

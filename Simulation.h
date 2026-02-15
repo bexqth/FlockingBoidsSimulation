@@ -8,8 +8,7 @@ class Simulation
 {
 private:
     std::vector<Boid> boids;
-    std::vector<AttractionObstacle*> attractionObstacles;
-    std::vector<AvoidanceObstacle*> avoidanceObstacles;
+    std::vector<Obstacle*> allObstacles;
     
 public:
     Simulation();

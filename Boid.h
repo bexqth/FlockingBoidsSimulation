@@ -22,8 +22,7 @@ class Boid
         void checkForSeparation(std::vector<Boid>& vector);
         void checkForAlignment(std::vector<Boid>& vector);
         void checkForCohesion(std::vector<Boid>& vector);
-        void checkForAttractionObstacle(std::vector<AttractionObstacle*>& attObstacles);
-        void checkForAvoidanceObstacle(std::vector<AvoidanceObstacle*>& avObstacles);
+        void checkForObstacle(std::vector<Obstacle*>& obstacles);
         std::pair<sf::Vector2f, bool> normalizeVector(sf::Vector2f vector);
         sf::Vector2f getPosition();
         sf::Vector2f getVelocity();
