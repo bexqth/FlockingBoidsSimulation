@@ -6,7 +6,7 @@ using namespace std;
 
 Boid::Boid()
 {
-    //this->speed = 2.0f;
+    //this->speed = 0.04f;
     this->speed = 0.05f;
     random_device rd;
     mt19937 gen(rd());
@@ -188,8 +188,8 @@ std::pair<sf::Vector2f, bool> Boid::normalizeVector(sf::Vector2f vector)
         
         vector.x = vector.x / vectorLength;
         vector.y = vector.y / vectorLength;
-        float vectorLength = sqrt((vector.x * vector.x) + (vector.y * vector.y));
-        cout << vectorLength << endl;
+        //float vectorLength = sqrt((vector.x * vector.x) + (vector.y * vector.y));
+        //cout << vectorLength << endl;
         return {vector, true};
     }
     cout << vectorLength << endl;
