@@ -1,10 +1,20 @@
 #include "AttractionObstacle.h"
+#include <iostream>
 
-AttractionObstacle::AttractionObstacle()
+using namespace std;
+
+AttractionObstacle::AttractionObstacle(sf::Vector2f position) : Obstacle(position)
 {
-
+    this->shape.setFillColor(sf::Color(55, 188, 125));
+    cout << position.x << " " << position.y << endl;
 }
 
 AttractionObstacle::~AttractionObstacle()
 {
+    
+}
+
+void AttractionObstacle::update()
+{
+
 }

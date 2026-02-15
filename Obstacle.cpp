@@ -4,6 +4,7 @@ Obstacle::Obstacle(sf::Vector2f position) : position(position)
 {
     this->radius = 10.0f;
     this->conflicArea = 20.0f;
+    this->position = position;
 }
 
 Obstacle::~Obstacle()
@@ -17,6 +18,7 @@ void Obstacle::draw(sf::RenderWindow& window)
 
 bool Obstacle::isMouseClicked(sf::Vector2i mousePosition)
 {
+    return false;
 }
 
 sf::Vector2f Obstacle::getPosition() const

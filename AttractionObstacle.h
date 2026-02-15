@@ -1,11 +1,13 @@
 #pragma once
+#include "Obstacle.h"
 
-class AttractionObstacle
+class AttractionObstacle : public Obstacle
 {
 private:
    
 public:
-    AttractionObstacle();
+    AttractionObstacle(sf::Vector2f position);
     ~AttractionObstacle();
+    void update() override;
 };
 
