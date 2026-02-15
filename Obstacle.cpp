@@ -6,7 +6,6 @@ using namespace std;
 Obstacle::Obstacle(sf::Vector2f position) : position(position)
 {
     this->radius = 10.0f;
-    this->conflicArea = 20.0f;
     this->position = position;
     this->shape.setRadius(this->radius);
     this->shape.setOrigin(sf::Vector2f(this->radius, this->radius));
@@ -15,6 +14,7 @@ Obstacle::Obstacle(sf::Vector2f position) : position(position)
 
 Obstacle::~Obstacle()
 {
+
 }
 
 void Obstacle::draw(sf::RenderWindow& window)

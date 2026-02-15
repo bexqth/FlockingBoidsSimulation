@@ -16,9 +16,9 @@ Simulation::~Simulation()
 void Simulation::update(int winWidth, int winHeight)
 {
     for (auto& boid : boids)
-        {
-            boid.checkForSeparation(boids);
-        }
+    {
+        boid.checkForSeparation(boids);
+    }
 
     for (auto& boid : boids)
     {
@@ -34,6 +34,12 @@ void Simulation::update(int winWidth, int winHeight)
     {
         boid.move(winWidth, winHeight);
     }
+
+    for (auto& boid : boids)
+    {
+        boid.checkForAttractionObstacle(this->attractionObstacles);
+    }
+    
 }
 
 void Simulation::draw(sf::RenderWindow &window)
@@ -57,10 +63,7 @@ void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button bu
             //cout << obs << endl;
             if (obs == nullptr) {
                 this->attractionObstacles.push_back(new AttractionObstacle(sf::Vector2f(mousePos)));
-                cout << "obs created" << endl;
-                //this->attractionObstacles[this->attractionObstacles.size() - 1]->draw(window);
             } else {
-                cout << "obs deleted" << endl;
                 eraseObstacle(obs);
             }
             break;

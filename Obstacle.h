@@ -7,7 +7,6 @@ protected:
     sf::Vector2f position;
     sf::CircleShape shape;
     float radius;
-    float conflicArea;
 public:
     Obstacle(sf::Vector2f position);
     virtual ~Obstacle();

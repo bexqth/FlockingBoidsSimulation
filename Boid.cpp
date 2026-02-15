@@ -1,6 +1,7 @@
 #include "Boid.h"
 #include <iostream>
 #include <random>
+#include "AttractionObstacle.h"
 
 using namespace std;
 
@@ -173,6 +174,27 @@ void Boid::checkForCohesion(std::vector<Boid> &vector)
         if (normalizedDirectinMiddle.second) {
             directionToMiddle = normalizedDirectinMiddle.first * this->speed;
             this->velocity = (this->velocity * 0.998f) + (directionToMiddle * 0.002f);
+            std::pair<sf::Vector2f, bool> normalizedVelocity =  this->normalizeVector(this->velocity);
+            if (normalizedVelocity.second) {
+                this->velocity = normalizedVelocity.first * this->speed;
+            }
+        }
+    }
+}
+
+void Boid::checkForAttractionObstacle(std::vector<AttractionObstacle*> &attObstacles)
+{
+    for(auto& attObstacle : attObstacles) {
+        float xDiff = attObstacle->getPosition().x - this->position.x;
+        float yDiff = attObstacle->getPosition().y - this->position.y;
+        auto distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
+        float weight = (1.f / (distance + 30.f));
+
+        auto directionVector = sf::Vector2f(xDiff, yDiff);
+        auto normalizedDirectionVector = this->normalizeVector(directionVector);
+        if (normalizedDirectionVector.second) {
+            auto directionToObstacle = normalizedDirectionVector.first * this->speed;
+            this->velocity = (this->velocity * (1.0f - weight)) + (directionToObstacle * weight);
             std::pair<sf::Vector2f, bool> normalizedVelocity =  this->normalizeVector(this->velocity);
             if (normalizedVelocity.second) {
                 this->velocity = normalizedVelocity.first * this->speed;
