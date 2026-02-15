@@ -6,7 +6,6 @@ class Obstacle
 protected:
     sf::Vector2f position;
     sf::CircleShape shape;
-    sf::Color color;
     float radius;
     float conflicArea;
 public:

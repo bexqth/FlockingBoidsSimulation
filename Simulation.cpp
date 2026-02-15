@@ -1,8 +1,12 @@
 #include "Simulation.h"
+#include <iostream>
+
+using namespace std;
 
 Simulation::Simulation()
 {
     this->boids.resize(40);
+    this->attractionObstacles = {};
 }
 
 Simulation::~Simulation()
@@ -38,4 +42,48 @@ void Simulation::draw(sf::RenderWindow &window)
     {
         boid.draw(window);
     }
+
+    for (auto* obs : attractionObstacles) {
+        obs->draw(window);
+    }
+}
+
+void Simulation::handleMouseClick(sf::RenderWindow &window, sf::Mouse::Button button, sf::Vector2i mousePos)
+{
+    switch (button)
+    {
+        case sf::Mouse::Button::Right:
+            auto obs = this->checkIfClickedObstacle(mousePos);
+            if (obs == nullptr) {
+                this->attractionObstacles.push_back(new AttractionObstacle(sf::Vector2f(mousePos)));
+                //this->attractionObstacles[this->attractionObstacles.size() - 1]->draw(window);
+            } else {
+                eraseObstacle(obs);
+            }
+            break;
+    }
+}
+
+
+void Simulation::eraseObstacle(Obstacle* foundObstacle)
+{
+    for(int i = 0; i < this->attractionObstacles.size(); i++) {
+        if (this->attractionObstacles[i] == foundObstacle) {
+            this->attractionObstacles.erase(this->attractionObstacles.begin() + i);
+            break;
+        }
+    }
+}
+
+Obstacle* Simulation::checkIfClickedObstacle(sf::Vector2i mousePos)
+{
+    for (auto& atObs : this->attractionObstacles)
+    {
+        if (atObs->isMouseClicked(mousePos))
+        {
+            return atObs;
+        }
+        
+    }
+    return nullptr;
 }

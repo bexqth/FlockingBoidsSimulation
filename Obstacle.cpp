@@ -5,6 +5,9 @@ Obstacle::Obstacle(sf::Vector2f position) : position(position)
     this->radius = 10.0f;
     this->conflicArea = 20.0f;
     this->position = position;
+    this->shape.setRadius(this->radius);
+    this->shape.setOrigin(sf::Vector2f(this->radius, this->radius));
+    this->shape.setPosition(this->position);
 }
 
 Obstacle::~Obstacle()
