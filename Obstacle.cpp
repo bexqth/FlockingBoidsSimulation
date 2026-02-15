@@ -27,8 +27,7 @@ bool Obstacle::isMouseClicked(sf::Vector2i mousePosition)
     float xDiff = mousePosition.x - this->position.x;
     float yDiff = mousePosition.y - this->position.y;
     float distance = sqrt((xDiff * xDiff) + (yDiff * yDiff));
-    if(distance <= this->conflicArea) {
-        //cout << "in the conflict area" << endl;
+    if(distance <= this->radius) {
         return true;
     }
     return false;
